@@ -20,15 +20,27 @@ actor GitHubAPIClient {
     // MARK: - Repos
 
     func fetchUserRepos(token: String) async throws -> [Repository] {
-        let request = makeRequest(
-            path: "/user/repos",
-            queryItems: [
-                URLQueryItem(name: "per_page", value: "100"),
-                URLQueryItem(name: "sort", value: "pushed"),
-            ],
-            token: token
-        )
-        return try await perform(request)
+        var allRepos: [Repository] = []
+        var page = 1
+        let perPage = 100
+
+        while true {
+            let request = makeRequest(
+                path: "/user/repos",
+                queryItems: [
+                    URLQueryItem(name: "per_page", value: "\(perPage)"),
+                    URLQueryItem(name: "sort", value: "pushed"),
+                    URLQueryItem(name: "page", value: "\(page)"),
+                    URLQueryItem(name: "type", value: "all"),
+                ],
+                token: token
+            )
+            let batch: [Repository] = try await perform(request)
+            allRepos.append(contentsOf: batch)
+            if batch.count < perPage { break }
+            page += 1
+        }
+        return allRepos
     }
 
     // MARK: - Workflow Runs

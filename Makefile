@@ -1,4 +1,4 @@
-APP_NAME := Octowatch
+APP_NAME := GitHubActionsWatch
 APP_BUNDLE := $(APP_NAME).app
 BIN_PATH := $(shell swift build -c release --show-bin-path 2>/dev/null)
 

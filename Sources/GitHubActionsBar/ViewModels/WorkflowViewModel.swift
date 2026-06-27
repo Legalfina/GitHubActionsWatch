@@ -110,7 +110,9 @@ final class WorkflowViewModel {
             let user = try await apiClient.fetchAuthenticatedUser(token: token)
             username = user.login
 
-            repos = try await apiClient.fetchUserRepos(token: token)
+            let allRepos = try await apiClient.fetchUserRepos(token: token)
+            let ownerPrefix = "\(user.login)/".lowercased()
+            repos = allRepos.filter { !$0.fullName.lowercased().hasPrefix(ownerPrefix) }
 
             // Select all repos by default if none selected
             if selectedRepoFullNames.isEmpty {
@@ -131,7 +133,8 @@ final class WorkflowViewModel {
         errorMessage = nil
 
         let activeRepos = repos.filter { selectedRepoFullNames.contains($0.fullName) }
-        let repoTuples = activeRepos.map { (owner: $0.owner.login, repo: $0.name, branch: $0.defaultBranch) }
+        // Fetch runs across all branches (branch: nil) so main and feature branches both appear.
+        let repoTuples = activeRepos.map { (owner: $0.owner.login, repo: $0.name, branch: String?.none) }
 
         guard !repoTuples.isEmpty else {
             runs = []

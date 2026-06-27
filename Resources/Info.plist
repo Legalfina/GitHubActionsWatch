@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key>
-    <string>com.hugobourget.Octowatch</string>
+    <string>com.legalfina.GitHubActionsWatch</string>
     <key>CFBundleName</key>
-    <string>Octowatch</string>
+    <string>GitHubActionsWatch</string>
     <key>CFBundleDisplayName</key>
-    <string>Octowatch</string>
+    <string>GitHubActionsWatch</string>
     <key>CFBundleExecutable</key>
-    <string>Octowatch</string>
+    <string>GitHubActionsWatch</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleVersion</key>

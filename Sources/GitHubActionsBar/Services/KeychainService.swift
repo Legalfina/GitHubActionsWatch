@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 enum KeychainService {
-    private static let service = "com.hugobourget.Octowatch"
+    private static let service = "com.legalfina.GitHubActionsWatch"
     private static let account = "github-pat"
 
     static func savePAT(_ token: String) throws {

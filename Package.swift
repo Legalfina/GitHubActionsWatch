@@ -2,13 +2,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "Octowatch",
+    name: "GitHubActionsWatch",
     platforms: [
         .macOS(.v14)
     ],
     targets: [
         .executableTarget(
-            name: "Octowatch",
+            name: "GitHubActionsWatch",
             path: "Sources/GitHubActionsBar"
         )
     ]
