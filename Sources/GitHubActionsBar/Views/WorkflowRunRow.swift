@@ -16,6 +16,10 @@ struct WorkflowRunRow: View {
                 statusDot
                     .frame(width: 10)
 
+                repoInitialBadge
+
+                branchBadge
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(run.displayTitle ?? run.name ?? "Workflow")
                         .font(.callout.weight(.medium))
@@ -75,6 +79,55 @@ struct WorkflowRunRow: View {
         let hours = minutes / 60
         let remainingMinutes = minutes % 60
         return remainingMinutes > 0 ? "\(hours)h \(remainingMinutes)m" : "\(hours)h"
+    }
+
+    private var repoName: String {
+        guard let fullName = run.repository?.fullName else { return "" }
+        return fullName.split(separator: "/").last.map(String.init) ?? fullName
+    }
+
+    private var repoInitial: String {
+        repoName.first.map { String($0).uppercased() } ?? "?"
+    }
+
+    /// Deterministic color per repo so each repo's badge stays consistent.
+    private var repoColor: Color {
+        let palette: [Color] = [.blue, .purple, .pink, .orange, .teal, .indigo, .green, .red, .mint, .cyan]
+        let hash = repoName.unicodeScalars.reduce(0) { ($0 &* 31 &+ Int($1.value)) }
+        return palette[abs(hash) % palette.count]
+    }
+
+    private var repoInitialBadge: some View {
+        Text(repoInitial)
+            .font(.caption2.weight(.bold))
+            .foregroundStyle(.white)
+            .frame(width: 20, height: 20)
+            .background(Circle().fill(repoColor.gradient))
+    }
+
+    /// Single-letter branch indicator: "m" for main/master, "d" for develop,
+    /// otherwise the branch's first letter. Each gets a distinct color.
+    private var branchStyle: (initial: String, color: Color)? {
+        guard let branch = run.headBranch?.lowercased() else { return nil }
+        switch branch {
+        case "main", "master":
+            return ("m", .green)
+        case "develop", "dev":
+            return ("d", .orange)
+        default:
+            return (branch.first.map(String.init) ?? "?", .gray)
+        }
+    }
+
+    @ViewBuilder
+    private var branchBadge: some View {
+        if let style = branchStyle {
+            Text(style.initial)
+                .font(.caption2.weight(.bold))
+                .foregroundStyle(.white)
+                .frame(width: 20, height: 20)
+                .background(Circle().fill(style.color.gradient))
+        }
     }
 
     @ViewBuilder
